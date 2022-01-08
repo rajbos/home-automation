@@ -34,3 +34,5 @@ Call `Test-Loop` to continually check if the camera is being used, without stopp
 
 ## LoopWithAction
 Call `LoopWithAction` to check if the camera is being used, and if so, run the action. This method will stop checking after the first 'in use' result and run the action. It will then wait for the remaining of a minute before checking again (to prevent checking to often).
+
+For the action, update the method 'Run-Action' to your liking. I have a check in there to only send in an update to Home Assistant if needed, but you can do whatever you want here.

@@ -118,6 +118,7 @@ function LoopWithAction {
         $active = Get-CameraActive
         if ($active) {
             # todo: act on being active?
+            Run-Action
         }
         # don't run again unless a minute has passed
         $end = Get-Date
@@ -126,6 +127,24 @@ function LoopWithAction {
             Write-Message "Sleeping for $((60-$duration.TotalSeconds).ToString('#')) seconds"
             Start-Sleep (60-($duration.TotalSeconds))
         }
+    }
+}
+
+function Run-Action {
+    Write-Message "Running action"
+
+    . $PSScriptRoot/trigger-homeassistant.ps1
+
+    $entityId = "switch.shelly_plug_s_9a57b1_relay_0"
+    $state = getEntityState -entityId $entityId
+    Write-Message "Entity state is [$($state.state)]"
+    if ($state.state -eq "on") {
+        Write-Message "Turning off"
+        switchToggle -entityId $entityId -state "turn_off"
+    }
+    else {
+        Write-Message "Turning on"
+        switchToggle -entityId $entityId -state "turn_on"
     }
 }
 

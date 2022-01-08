@@ -111,3 +111,41 @@ function switchScene{
     Write-Message "Call made successfully"
 }
 
+<#
+    $command options: toggle, turn_on, turn_off
+#>
+function getEntityState{
+    param (
+        [string]$entityId,
+        [string]$token,
+        [string]$homeAssistant = $env:homeAssistant
+    )
+
+    if ($token -eq "") {
+        Write-Message "Loading token from disk"
+        try {
+            $token = Get-Token
+        } catch {
+            Write-Message "Could not load token from disk. Please set the token as environment variable or in the script."
+            Write-Message $_
+            throw
+        }
+    }
+
+    if ($homeAssistant -eq "") {
+        #Write-Error "Parameter 'homeAssistant' is missing. You can set this as environment value with the url to your home assistant instance."
+        # overwrite with hardcode value for now
+        $homeAssistant = $localHomeAssistant
+    }
+    $url = "$homeAssistant/api/states/$entityId"
+    Write-Message "We are using this url for the command: [$url]"
+
+    $headers = @{
+        "Content-Type" = "application/json"
+        "Authorization" = "Bearer $token"
+    }
+    Write-Message "Calling the url"
+    Invoke-RestMethod -Uri $url -Headers $headers -Method GET
+    Write-Message "Call made successfully"
+}
+
