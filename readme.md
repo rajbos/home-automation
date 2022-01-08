@@ -25,3 +25,12 @@ When the camera is on (I have two different ones to use), I switch on this scene
 
 ## Scene 3: Office Leave
 When I stop working, everything I have automated needs to turn off again, so this scene switches of the desk lamp, the Light strip, the 'Do epic shit' signal, the speakers and the Key Lights.
+
+# Detecting camera is being used (Windows)
+In the script `camera-check.ps1` I have a couple of methods to check if you are using the camera. Any process should be picked up, as long as you run the script with admin rights (elevated). This is needed because a lot of applications (like the camera app, slack, usage in a browser) don't take control of the camera directly, but through svchost.exe.
+
+## Test-Loop
+Call `Test-Loop` to continually check if the camera is being used, without stopping at the first 'in use' result. This can help you figure out if the script sees all camera's and all uses.
+
+## LoopWithAction
+Call `LoopWithAction` to check if the camera is being used, and if so, run the action. This method will stop checking after the first 'in use' result and run the action. It will then wait for the remaining of a minute before checking again (to prevent checking to often).
