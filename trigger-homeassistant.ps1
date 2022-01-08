@@ -47,7 +47,7 @@ function switchToggle{
     if ($token -eq "") {
         Write-Message "Loading token from disk"
         try {
-        $token = Get-Token
+            $token = Get-Token
         } catch {
             Write-Message "Could not load token from disk. Please set the token as environment variable or in the script."
             Write-Message $_
@@ -86,7 +86,7 @@ function switchScene{
     if ($token -eq "") {
         Write-Message "Loading token from disk"
         try {
-        $token = Get-Token
+            $token = Get-Token
         } catch {
             Write-Message "Could not load token from disk. Please set the token as environment variable or in the script."
             Write-Message $_

@@ -17,7 +17,8 @@ if ($displays.Count -gt 1) {
     # call script to switch on scene
     $entityId = "scene.officelights"
     switchScene -entityId $entityId -command "turn_on"
+    Write-Message "Switched on scene $entityId"
 }
 else {
-    Write-Message "Found only display, stopping execution"
+    Write-Message "Found only one display, stopping execution"
 }
