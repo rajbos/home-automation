@@ -1,4 +1,4 @@
-Collection of scripts I use for home automation stuff
+This repo contains a collection of scripts I use for home automation stuff
 
 
 # Trigger a home assistant scene on unlock (Windows)
@@ -14,13 +14,13 @@ Scripts:
 
 Setup:
 I have defined some home assistant scenes that I use during the day when I am working at [my home office](https://devopsjournal.io/blog/2021/05/13/home-setup).  
-![screen shot of 3 scenes in home assistant: Office Lights, Camera On, Office Leave](/homeassistant.png)  
 
+![screen shot of 3 scenes in home assistant: Office Lights, Camera On, Office Leave](/homeassistant.png)  
 
 ## Scene 1: Office Lights (this one is automated with the scripts in this repo)
 When this one is triggered, my office lights (small desk lamp), my 'Do Epic Shit' signal and my speakers will turn on: everything I need to start working (laptop and monitor have their own flow and can be considered as 'Always on'). I've set this up as with [Shelly Plug S](https://shelly.cloud/products/shelly-plug-s-smart-home-automation-device/) and an extension cord that powers all three devices. Wrapped it in a scene in Home Assistant together with my [Elgato Light Strip](https://www.elgato.com/en/light-strip) for easy switching it on and off. 
 
-## Scene 2: Camera On
+## Scene 2: Camera On (to be automated)
 When the camera is on (I have two different ones to use), I switch on this scene to turn on the 2 [Elgato Key Light Airs](https://www.elgato.com/en/key-light-air) that I have, so that people can actually see me (check my blogpost on my setup [here](https://devopsjournal.io/blog/2021/05/13/home-setup)). When I am done with the call, I switch off the scene and the lights turn off.
 
 ## Scene 3: Office Leave
