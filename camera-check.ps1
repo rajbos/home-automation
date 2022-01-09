@@ -1,4 +1,4 @@
-
+#Requires -RunAsAdministrator
 <#
     Tested on Windows 11
     This works for the following programs so far:
@@ -112,14 +112,17 @@ function Get-CameraActive {
     return $false
 }
 
+function CheckCameraOnceWithAction {    
+    $active = Get-CameraActive
+    Run-Action $active    
+}
+
 function LoopWithAction {
     while ($true) {
         $start = Get-Date
         $active = Get-CameraActive
-        if ($active) {
-            # todo: act on being active?
-            Run-Action
-        }
+        Run-Action $active
+
         # don't run again unless a minute has passed
         $end = Get-Date
         $duration = $end - $start
@@ -130,21 +133,41 @@ function LoopWithAction {
     }
 }
 
+# lamp living room to test:
+# $entityId = "switch.shelly_plug_s_9a57b1_relay_0"
+
+# actual office camera lights:
+$entityId = "script.camera_lights"
+$checkEntityIdState = "light.key_light_left"
+
 function Run-Action {
-    Write-Message "Running action"
+    param(
+        [bool] $active = $false
+    )
+    Write-Message "Running action to make the state [$active]"
 
     . $PSScriptRoot/trigger-homeassistant.ps1
+    
+    $state = getEntityState -entityId $checkEntityIdState    
+    Write-Message "Current entity state is [$($state.state)]"
 
-    $entityId = "switch.shelly_plug_s_9a57b1_relay_0"
-    $state = getEntityState -entityId $entityId
-    Write-Message "Entity state is [$($state.state)]"
-    if ($state.state -eq "on") {
-        Write-Message "Turning off"
-        switchToggle -entityId $entityId -state "turn_off"
+    if ($active) {
+        if ($state.state -eq "on") {
+            Write-Message "Already active, no need to do anything"
+        } 
+        else {            
+            Write-Message "Turning on"
+            runScript -entityId $entityId
+        }
     }
     else {
-        Write-Message "Turning on"
-        switchToggle -entityId $entityId -state "turn_on"
+        if ($state.state -eq "off") {
+            Write-Message "Already off, no need to do anything"
+        } 
+        else {            
+            Write-Message "Turning off"
+            runScript -entityId $entityId 
+        }
     }
 }
 
