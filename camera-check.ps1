@@ -14,7 +14,46 @@
 #>
 
 . $PSScriptRoot/utils.ps1
-$handleDirectory = "C:\Users\RobBos\Downloads\Handle"
+$location = Get-Location
+$handleExe = "$location\Handle\handle64.exe"
+
+function Init-Script {            
+    Write-Message "Using [$handleExe] to search for the handles"
+
+    if (!(Test-Path (Split-Path -Path $handleExe))) {
+        # make directory if it doesn't exist
+        New-Item -ItemType Directory -Path $location\Handle
+    }
+
+    # check if the file exists
+    if (!(Test-Path $handleExe))
+    {    
+        Write-Message "[$handleExe] does not exists so downloading it first"
+        $zipFile = "$location\Handle\handle.zip"
+        if (!(Test-Path $zipFile)) {
+            $downloadUri = "https://download.sysinternals.com/files/Handle.zip"
+            Write-Message "Downloading handle from [$downloadUri]"
+            Invoke-RestMethod -Uri $downloadUri -outFile $zipFile
+        }
+
+        $ExtractPath = "$location\Handle\"
+        $ExtractShell = New-Object -ComObject Shell.Application
+        $ExtractFiles = $ExtractShell.Namespace($zipFile).Items()
+        $ExtractShell.NameSpace($ExtractPath).CopyHere($ExtractFiles) 
+        Start-Process $ExtractPath    
+
+        # unzip the file
+        Write-Message "Unzipping [$zipFile] to [$location\Handle]"
+        $unzip = New-Object -ComObject Shell.Application
+
+        if (!(Test-Path $handleExe)) {
+            Write-Message "handle64.exe not found in [$(Get-Location)], cannot continue"
+            return
+        }
+    }
+}
+# always init the script and download the handle64.exe if not available
+Init-Script
 
 function Check-Device {
     param(
@@ -31,7 +70,7 @@ function Check-Device {
     }
 
     Write-Message "$deviceCount.  Checking handles in use for [$($device.FriendlyName)] and PDON [$($property.Data)]"
-    $handles = $(& $handleDirectory\handle64.exe -NoBanner -a "$($property.Data)")
+    $handles = $(& $handleExe -NoBanner -a "$($property.Data)")
     if ($handles -gt 0) {
         if ($handles[0].ToLower().StartsWith("no matching handles found")){
             Write-Message "  - No handles found for [$($device.FriendlyName)]"
@@ -66,18 +105,6 @@ function Check-Device {
         }
     }
     return $false
-}
-
-# todo: download the latest version of handle64.exe from https://download.sysinternals.com/files/Handle.zip
-# unzip it in the same directory as this script
-Write-Message "Using [$handleDirectory] as the directory of handle.exe"
-
-# check if the file exists
-if (!(Test-Path "$handleDirectory\handle64.exe"))
-{
-    Write-Message "handle.exe not found in [$handleDirectory]"
-    Write-Message "Download handle from https://docs.microsoft.com/en-us/sysinternals/downloads/handle"
-    return 1
 }
 
 function Test-Loop {
@@ -172,4 +199,5 @@ function Run-Action {
 }
 
 #Test-Loop
-LoopWithAction
+#LoopWithAction
+CheckCameraOnceWithAction

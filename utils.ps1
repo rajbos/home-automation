@@ -7,6 +7,6 @@ function Write-Message(
     Write-host $(Get-Date -Format "HH:mm:ss") $message
     if ($nologfile -eq $false)
     {
-        $message | Out-File -FilePath $logFile -Append
+        $(Get-Date -Format "HH:mm:ss") $message | Out-File -FilePath $logFile -Append
     }
 }
