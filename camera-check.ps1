@@ -13,6 +13,7 @@
     - Camtasia Capture (svchost)
 #>
 
+Write-Host "Current PSScriptRoot [$PSScriptRoot]"
 . $PSScriptRoot/utils.ps1
 $location = Get-Location
 $handleExe = "$location\Handle\handle64.exe"
@@ -199,5 +200,5 @@ function Run-Action {
 }
 
 #Test-Loop
-#LoopWithAction
-CheckCameraOnceWithAction
+LoopWithAction
+#CheckCameraOnceWithAction

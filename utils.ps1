@@ -4,9 +4,9 @@ function Write-Message(
     [boolean] $nologfile = $false
 )
 {
-    Write-host $(Get-Date -Format "HH:mm:ss") $message
+    Write-Host $(Get-Date -Format "HH:mm:ss") $message
     if ($nologfile -eq $false)
     {
-        $(Get-Date -Format "HH:mm:ss") $message | Out-File -FilePath $logFile -Append
+        "$(Get-Date -Format "HH:mm:ss") $message" | Out-File -FilePath $logFile -Append
     }
 }
