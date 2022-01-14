@@ -148,8 +148,22 @@ function CheckCameraOnceWithAction {
 function LoopWithAction {
     while ($true) {
         $start = Get-Date
-        $active = Get-CameraActive
-        Run-Action $active
+
+        $logonui = Get-Process logonui -ErrorAction SilentlyContinue
+        if ($null -ne $logonui) {
+            # if logonui is running, the user is not logged in at all, so if the lights are already off, we can stop the execution
+            Write-Message "Found logonui process"
+            $state = getEntityState -entityId $checkEntityIdState    
+            Write-Message "Current entity state is [$($state.state)]"
+            if ($state.state -ne "on") {
+                Write-Message "The lights are off already and the user is not authenticated, skipping all checks"                
+            }
+        }
+        else {
+            # check normally
+            $active = Get-CameraActive
+            Run-Action $active
+        }        
 
         # don't run again unless a minute has passed
         $end = Get-Date
@@ -167,7 +181,6 @@ function LoopWithAction {
 # actual office camera lights:
 $entityId = "script.camera_lights"
 $checkEntityIdState = "light.key_light_left"
-
 function Run-Action {
     param(
         [bool] $active = $false
@@ -198,6 +211,8 @@ function Run-Action {
         }
     }
 }
+
+$logFileName="CameraCheck.log"
 
 #Test-Loop
 LoopWithAction

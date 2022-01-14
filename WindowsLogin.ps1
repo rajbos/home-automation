@@ -3,6 +3,8 @@ param(
 )
 
 . $PSScriptRoot/utils.ps1
+$logFileName="WindowsLogon.log"
+
 Write-Message (Get-Date -Format 'yyyyMMdd HH:mm')
 Write-Message "Starting Windows Logon Script"
 
