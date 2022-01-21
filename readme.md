@@ -39,3 +39,11 @@ For the action, update the method 'Run-Action' to your liking. I have a check in
 
 ## CheckCameraOnceWithAction
 In the method `CheckCameraOnceWithAction` I have a loop that checks if the camera is being used, and if so, run the action. This method will only run once, and then stop. This setup is used on my machine, where I have setup a task in the Windows Task scheduler to run this script every minute.
+
+# Tested succesfully in action with:
+- Teams
+- Zoom
+- OBS Studio
+- Bandicam
+- Camtasia recorder
+- Slack
