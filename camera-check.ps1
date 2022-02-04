@@ -110,8 +110,8 @@ function Check-Device {
 
 function Test-Loop {
     while ($true) {
-        Write-Message "Searching for camera devices"
-        $devices = Get-PnpDevice -Class Camera,Image
+        Write-Message "Searching for camera devices..."
+        $devices = Get-PnpDevice -Class Camera
         Write-Message "Found [$($devices.Count)] camera devices"
         $deviceCount = 0
         foreach ($device in $devices) {
@@ -125,8 +125,8 @@ function Test-Loop {
 
 function Get-CameraActive {
     
-    Write-Message "Searching for camera devices"
-    $devices = Get-PnpDevice -Class Camera,Image
+    Write-Message "Searching for camera devices..."
+    $devices = Get-PnpDevice -Class Camera
     Write-Message "Found [$($devices.Count)] camera devices"
     $deviceCount = 0
     foreach ($device in $devices) {
