@@ -126,11 +126,16 @@ function Test-Loop {
 function Get-CameraActive {
     
     Write-Message "Searching for camera devices..."
-    $devices = Get-PnpDevice -Class Camera
+    $devices = Get-PnpDevice -Class Camera,Image
     Write-Message "Found [$($devices.Count)] camera devices"
     $deviceCount = 0
     foreach ($device in $devices) {
-        $deviceCount++
+        $deviceCount++        
+        if ($device.FriendlyName.StartsWith("HP60843E.localdomain")) {
+            # skip this device
+            Write-Message "    Skipping [$($device.FriendlyName)]"
+            continue
+        }
         $result = Check-Device $device $deviceCount
         if ($result) {
             Write-Message "Found active camera device"
