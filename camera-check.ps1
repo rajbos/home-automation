@@ -18,7 +18,7 @@ Write-Host "Current PSScriptRoot [$PSScriptRoot]"
 $location = Get-Location
 $handleExe = "$location\Handle\handle64.exe"
 
-function Init-Script {            
+function Init-Script {
     Write-Message "Using [$handleExe] to search for the handles"
 
     if (!(Test-Path (Split-Path -Path $handleExe))) {
@@ -28,7 +28,7 @@ function Init-Script {
 
     # check if the file exists
     if (!(Test-Path $handleExe))
-    {    
+    {
         Write-Message "[$handleExe] does not exists so downloading it first"
         $zipFile = "$location\Handle\handle.zip"
         if (!(Test-Path $zipFile)) {
@@ -40,8 +40,8 @@ function Init-Script {
         $ExtractPath = "$location\Handle\"
         $ExtractShell = New-Object -ComObject Shell.Application
         $ExtractFiles = $ExtractShell.Namespace($zipFile).Items()
-        $ExtractShell.NameSpace($ExtractPath).CopyHere($ExtractFiles) 
-        Start-Process $ExtractPath    
+        $ExtractShell.NameSpace($ExtractPath).CopyHere($ExtractFiles)
+        Start-Process $ExtractPath
 
         # unzip the file
         Write-Message "Unzipping [$zipFile] to [$location\Handle]"
@@ -145,7 +145,8 @@ function Get-CameraActive {
     return $false
 }
 
-function CheckCameraOnceWithAction {    
+function CheckCameraOnceWithAction {
+    Write-Messge "Checking for camera devices from CheckCameraOnceWithAction"
     $active = Get-CameraActive
     Run-Action $active    
 }
@@ -158,17 +159,25 @@ function LoopWithAction {
         if ($null -ne $logonui) {
             # if logonui is running, the user is not logged in at all, so if the lights are already off, we can stop the execution
             Write-Message "Found logonui process"
-            $state = getEntityState -entityId $checkEntityIdState    
+            $state = getEntityState -entityId $checkEntityIdState
             Write-Message "Current entity state is [$($state.state)]"
             if ($state.state -ne "on") {
                 Write-Message "The lights are off already and the user is not authenticated, skipping all checks"                
             }
         }
         else {
-            # check normally
-            $active = Get-CameraActive
-            Run-Action $active
-        }        
+            # check if there are more then 1 monitor available (the laptop itself already is the first one :-) )
+            $displays = Get-CimInstance -Namespace root\wmi -ClassName WmiMonitorBasicDisplayParams
+            if ($displays.Count -gt 1) {
+                Write-Message "Found [$($displays.Count)] monitors"
+                # check normally
+                $active = Get-CameraActive
+                Run-Action $active
+            }
+            else {
+                Write-Message "Found [$($displays.Count)] monitors, skipping camera check"
+            }
+        }
 
         # don't run again unless a minute has passed
         $end = Get-Date
